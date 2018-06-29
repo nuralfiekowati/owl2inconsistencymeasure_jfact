@@ -4,13 +4,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
+import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owl.explanation.api.ExplanationException;
+import org.semanticweb.owl.explanation.api.ExplanationGenerator;
 import org.semanticweb.owl.explanation.api.ExplanationGeneratorInterruptedException;
+import org.semanticweb.owl.explanation.impl.blackbox.checker.InconsistentOntologyExplanationGeneratorFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -26,40 +35,58 @@ import uk.ac.manchester.cs.jfact.JFactFactory;
 
 public class inconsistency_measure_jfact {
 
+	static Set<OWLAxiom> arrayOfExplanation = null;
+	static Set<Set<OWLAxiom>> arrayOfExplanationSet = new HashSet<Set<OWLAxiom>>(3000000, 1000000F);
+	static HashSet<OWLAxiom> MIKAxiomSet = new HashSet<OWLAxiom>();
+	static HashSet<OWLAxiom> topBottom = new HashSet<OWLAxiom>();
+	static HashSet<OWLClass> MIKClassSet = new HashSet<OWLClass>();
+	static HashSet<OWLNamedIndividual> MIKIndividualSet = new HashSet<OWLNamedIndividual>();
+	static HashSet<OWLObjectProperty> MIKObjectPropertySet = new HashSet<OWLObjectProperty>();
+	static Set<OWLClass> inconsistentClass = null;
+	static Set<OWLNamedIndividual> inconsistentIndividual = null;
+	static Set<OWLObjectProperty> inconsistentObjectProperty = null;
+	static float sizeOfM;
+	static ArrayList<Integer> explanationSizeList = new ArrayList<>();
+	static float onePerSizeOfM;
+	static float sumOfSize = 0;
+	static HashSet<OWLAxiom> ontologyAxiomSet = new HashSet<OWLAxiom>(3000000, 1000000F);
+
 	public static void main(String[] args) throws Exception {
 
 		long startTime = System.currentTimeMillis();
 
 		try {
-			File file = new File("output_jfact_knowledgebaseK1.txt");
+			File file = new File("outputs/output_jfact_New-Feature-BottomObjectProperty-001.txt");
 			FileOutputStream fos = new FileOutputStream(file);
 			PrintStream ps = new PrintStream(fos);
 			System.setOut(ps);
 
-			HashSet<OWLAxiom> ontologyAxiomSet = new HashSet<OWLAxiom>(3000000, 1000000F);
-
-			File inputOntologyFile = new File("examples/knowledgebaseK1.owl");
+			File inputOntologyFile = new File("examples/New-Feature-BottomObjectProperty-001.owl");
 
 			OWLReasonerFactory rf = new JFactFactory(); // for jfact
 
 			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
+			OWLDataFactory df = manager.getOWLDataFactory();
+
 			OWLOntology ontology = manager.loadOntologyFromOntologyDocument(inputOntologyFile);
 
-			OWLReasonerConfiguration configuration = new SimpleConfiguration(); // for
-																				// JFact
+			OWLReasonerConfiguration configuration = new SimpleConfiguration(); // for jfact
 
-			/*
-			 * Configuration configuration = new Configuration(); //for hermit
-			 * configuration.throwInconsistentOntologyException=false; //for hermit
-			 */
-			OWLReasoner reasoner = rf.createReasoner(ontology, configuration); // for
-																				// hermit
-																				// and
-																				// JFact
+			OWLReasoner reasoner = rf.createReasoner(ontology, configuration); // for hermit and jfact
 
 			System.out.println(
 					"Is ontology (file name: " + inputOntologyFile + ") consistent? " + reasoner.isConsistent());
+
+			ExplanationGenerator<OWLAxiom> explainInconsistency = new InconsistentOntologyExplanationGeneratorFactory(
+					rf, 1000000000000000000L).createExplanationGenerator(ontology); // modified
+
+			Set<Explanation<OWLAxiom>> explanations = explainInconsistency
+					.getExplanations(df.getOWLSubClassOfAxiom(df.getOWLThing(), df.getOWLNothing()), 941); // set the
+																											// limit of
+																											// entailment
+
+			System.out.println("Explanation of inconsistency (MI(K)): " + explanations);
 
 			ManageOWL.owlsetmanager(ontology, ontologyAxiomSet);
 
@@ -68,11 +95,59 @@ public class inconsistency_measure_jfact {
 			System.out.println("==============INCONSISTENCY MEASURES FOR ONTOLOGY==============");
 			System.out.println("===============================================================");
 
-			if (reasoner.isConsistent()) {
-				System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 0);
-			} else {
-				System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 1);
+			Drastic_jfact.Drastic_measure(reasoner); // limit of
+			// entailment
+			System.out.println("Explanation of inconsistency (MI(K)): " + explanations);
+
+			for (Explanation<OWLAxiom> explanation : explanations) { // explanation is M in MI(K), while explanations is
+																		// MI(K).
+
+				arrayOfExplanation = explanation.getAxioms(); // arrayOfExplanation is M in MI(K)
+				System.out.println("-----------------------------------------------------------------------------");
+				System.out.println("MI(K) subset: " + arrayOfExplanation);
+				arrayOfExplanationSet.add(arrayOfExplanation); // arrayOfExplanationSet is MI(K)set
+				System.out.println("-----------------------------------------------------------------------------");
+
+				System.out.println("Axioms causing the inconsistency: ");
+				for (OWLAxiom causingAxiom : arrayOfExplanation) {
+					System.out.println(causingAxiom);
+					MIKAxiomSet.add(causingAxiom);
+					if ((causingAxiom.isBottomEntity() == true) || (causingAxiom.isTopEntity() == true)) {
+						topBottom.add(causingAxiom);
+					}
+
+					inconsistentClass = (Set<OWLClass>) causingAxiom.getClassesInSignature();
+					for (OWLClass theClass : inconsistentClass) {
+						// System.out.println("theClass: " + theClass);
+						MIKClassSet.add(theClass);
+					}
+					inconsistentIndividual = (Set<OWLNamedIndividual>) causingAxiom.getIndividualsInSignature();
+					for (OWLNamedIndividual theIndividual : inconsistentIndividual) {
+
+						MIKIndividualSet.add(theIndividual);
+					}
+					inconsistentObjectProperty = (Set<OWLObjectProperty>) causingAxiom.getObjectPropertiesInSignature();
+					for (OWLObjectProperty theObjectProperty : inconsistentObjectProperty) {
+						MIKObjectPropertySet.add(theObjectProperty);
+					}
+				}
+
+				System.out.println("-----------------------------------------------------------------------------");
+				System.out.println("--------------------------Computation for I_mic------------------------------");
+				System.out.println("M in MI(K): " + arrayOfExplanation);
+				sizeOfM = arrayOfExplanation.size();
+				System.out.println("M size: " + sizeOfM);
+				explanationSizeList.add((int) sizeOfM);
+				onePerSizeOfM = (float) 1 / sizeOfM;
+				System.out.println("One per M size: " + onePerSizeOfM);
+				sumOfSize = sumOfSize + onePerSizeOfM;
+
+				System.out.println("Sum of one per M size: " + sumOfSize);
+				System.out.println("-----------------------------------------------------------------------------");
+
 			}
+
+			MI_jfact.MI_measure(ontology, explanations);
 
 			System.out.println("***************************************************************");
 
@@ -96,10 +171,7 @@ public class inconsistency_measure_jfact {
 			System.out.println("OutOfMemoryError: " + m.getMessage());
 		}
 
-		long endTime = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
-		System.out.println("                                 ");
-		System.out.println("Total time execution: " + totalTime + " milliseconds.");
+		TotalTimeExecution.totalTime(startTime);
 
 	}
 
