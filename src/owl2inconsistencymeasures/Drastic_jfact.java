@@ -8,8 +8,10 @@ class Drastic_jfact {
 
 		if (reasoner.isConsistent()) {
 			System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 0);
+			System.out.println("-----------------------------------------------------------------------------");
 		} else {
 			System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 1);
+			System.out.println("-----------------------------------------------------------------------------");
 		}
 
 	}

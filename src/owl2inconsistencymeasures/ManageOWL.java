@@ -164,9 +164,6 @@ class ManageOWL {
 
 		System.out.println("======================");
 
-		int sizeOfK = ontologyAxiomSet.size();
-		System.out.println("Size of K: " + sizeOfK);
-
 	}
 
 }

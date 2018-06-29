@@ -25,6 +25,7 @@ class MIc_jfact {
 		sumOfSize = sumOfSize + onePerSizeOfM;
 
 		System.out.println("Sum of one per M size: " + sumOfSize);
+		System.out.println("3. MI^C-INCONSISTENCY MEASURE I_mic: " + sumOfSize);
 		System.out.println("-----------------------------------------------------------------------------");
 
 	}

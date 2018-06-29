@@ -1,65 +1,129 @@
 package owl2inconsistencymeasures;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.semanticweb.owl.explanation.api.ExplanationException;
-import org.semanticweb.owl.explanation.api.ExplanationGeneratorInterruptedException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.AxiomType;
-import org.semanticweb.owlapi.model.OWLAsymmetricObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
-import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
-import org.semanticweb.owlapi.model.OWLDisjointObjectPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLDisjointUnionAxiom;
-import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
-import org.semanticweb.owlapi.model.OWLEquivalentObjectPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLFunctionalObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLInverseFunctionalObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLInverseObjectPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLIrreflexiveObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLNegativeObjectPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLObjectPropertyDomainAxiom;
-import org.semanticweb.owlapi.model.OWLObjectPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLReflexiveObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
-import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
-import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
-import org.semanticweb.owlapi.reasoner.InconsistentOntologyException;
+import org.semanticweb.owlapi.model.OWLOntologyRenameException;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.ReasonerInterruptedException;
-import org.semanticweb.owlapi.reasoner.SimpleConfiguration;
 import org.semanticweb.owlapi.reasoner.TimeOutException;
 
 import uk.ac.manchester.cs.jfact.JFactFactory;
 
-public class Df_jfact {
+class Df_jfact {
 
-	float idf;
-	
-	public String Idf_measure() {
-	
-		return "4. Df INCONSISTENCY MEASURE I_df: " + idf;
-		
+	static OWLReasonerFactory rf6 = new JFactFactory();
+	static OWLOntologyManager manager6 = OWLManager.createOWLOntologyManager();
+	static AddAxiom addAxiom6;
+	static Set<OWLAxiom> axiomsToRemove6;
+	static ArrayList<Integer> consistentSubsetSize = new ArrayList<>();
+	static HashSet<Set<OWLAxiom>> consistentSubset = new HashSet<Set<OWLAxiom>>();
+	static HashSet<Set<OWLAxiom>> inconsistentSubset = new HashSet<Set<OWLAxiom>>();
+	static ArrayList<Integer> explanationSizeList = new ArrayList<>();
+	static float Msize;
+	static float RiK;
+	static float OneMinusRiK;
+	static ArrayList<Float> RiKarray = new ArrayList<>();
+
+	public static void Idf_measure(HashSet<OWLAxiom> ontologyAxiomSet) {
+
+		try {
+			OWLOntology AxiomOntology6 = manager6.createOntology();
+			int Ksize = SizeOfK.sizeK(ontologyAxiomSet);
+
+			for (Set<OWLAxiom> s : PoweSetCount.powerSet(ontologyAxiomSet)) {
+				manager6 = OWLManager.createOWLOntologyManager();
+				AxiomOntology6 = manager6.createOntology();
+
+				axiomsToRemove6 = AxiomOntology6.getAxioms();
+
+				if (axiomsToRemove6 != null) {
+					manager6.removeAxioms(AxiomOntology6, axiomsToRemove6);
+				}
+
+				for (OWLAxiom axiomOfS : s) {
+					addAxiom6 = new AddAxiom(AxiomOntology6, axiomOfS);
+					manager6.applyChange(addAxiom6);
+				}
+
+				OWLReasoner reasoner6 = rf6.createReasoner(AxiomOntology6); // for
+																			// hermit
+																			// and
+																			// JFact
+
+				System.out.println("C: " + s);
+				System.out.println("Is C consistent? " + reasoner6.isConsistent());
+
+				if (reasoner6.isConsistent() == true) {
+					consistentSubset.add(s);
+					consistentSubsetSize.add(s.size());
+				}
+
+				if (reasoner6.isConsistent() == false) {
+					inconsistentSubset.add(s);
+				}
+			}
+
+			for (int i = 0; i < Ksize; i++) {
+
+				int iPlus1 = i + 1;
+
+				Msize = Collections.frequency(explanationSizeList, iPlus1);
+
+				float Csize;
+
+				Csize = Collections.frequency(consistentSubsetSize, iPlus1);
+				System.out.println("Msize of " + iPlus1 + ": " + Msize);
+				System.out.println("Csize of " + iPlus1 + ": " + Csize);
+				float MsizePlusCsize = Msize + Csize;
+				if (Msize == 0) {
+					RiK = 0;
+				} else {
+					RiK = Msize / MsizePlusCsize;
+				}
+
+				System.out.println("R" + iPlus1 + "(K): " + Msize + "/" + MsizePlusCsize + "= " + RiK);
+				float RiKDivi = RiK / (float) iPlus1;
+				System.out.println("RiKDivi: " + RiKDivi);
+				OneMinusRiK = (float) 1 - RiKDivi;
+				System.out.println("(1 - RiK): " + OneMinusRiK);
+
+				RiKarray.add(OneMinusRiK);
+			}
+
+			float total = 1;
+			System.out.println("Number of one minus RiK: " + RiKarray.size());
+			for (float value : RiKarray) {
+				System.out.println("Each value in one minus RiK: " + value);
+				total *= value;
+			}
+			System.out.println("Total of multiplication of one minus RiK: " + total);
+			float idf = (float) 1 - total;
+			System.out.println("1 - Total of multiplication of one minus RiK: " + idf);
+			System.out.println("4. Df INCONSISTENCY MEASURE I_df: " + idf);
+			System.out.println("-----------------------------------------------------------------------------");
+		} catch (OWLOntologyRenameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeOutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReasonerInterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OWLOntologyCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

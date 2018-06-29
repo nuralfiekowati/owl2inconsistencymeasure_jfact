@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -45,10 +44,6 @@ public class inconsistency_measure_jfact {
 	static Set<OWLClass> inconsistentClass = null;
 	static Set<OWLNamedIndividual> inconsistentIndividual = null;
 	static Set<OWLObjectProperty> inconsistentObjectProperty = null;
-	static float sizeOfM;
-	static ArrayList<Integer> explanationSizeList = new ArrayList<>();
-	static float onePerSizeOfM;
-	static float sumOfSize = 0;
 	static HashSet<OWLAxiom> ontologyAxiomSet = new HashSet<OWLAxiom>(3000000, 1000000F);
 
 	public static void main(String[] args) throws Exception {
@@ -89,6 +84,7 @@ public class inconsistency_measure_jfact {
 			System.out.println("Explanation of inconsistency (MI(K)): " + explanations);
 
 			ManageOWL.owlsetmanager(ontology, ontologyAxiomSet);
+			SizeOfK.sizeK(ontologyAxiomSet);
 
 			System.out.println("                                   ");
 			System.out.println("===============================================================");
@@ -132,22 +128,11 @@ public class inconsistency_measure_jfact {
 					}
 				}
 
-				System.out.println("-----------------------------------------------------------------------------");
-				System.out.println("--------------------------Computation for I_mic------------------------------");
-				System.out.println("M in MI(K): " + arrayOfExplanation);
-				sizeOfM = arrayOfExplanation.size();
-				System.out.println("M size: " + sizeOfM);
-				explanationSizeList.add((int) sizeOfM);
-				onePerSizeOfM = (float) 1 / sizeOfM;
-				System.out.println("One per M size: " + onePerSizeOfM);
-				sumOfSize = sumOfSize + onePerSizeOfM;
-
-				System.out.println("Sum of one per M size: " + sumOfSize);
-				System.out.println("-----------------------------------------------------------------------------");
-
 			}
 
-			MI_jfact.MI_measure(ontology, explanations);
+			MI_jfact.MI_measure(ontology, explanations, ontologyAxiomSet);
+			MIc_jfact.MIc_measure(arrayOfExplanation);
+			Df_jfact.Idf_measure(ontologyAxiomSet);
 
 			System.out.println("***************************************************************");
 
