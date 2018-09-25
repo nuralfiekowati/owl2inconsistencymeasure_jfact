@@ -1,5 +1,9 @@
 package owl2inconsistencymeasures;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,17 +36,24 @@ import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
 
 class MI_jfact {
 
-	public static void MI_measure(OWLOntology ontology, Set<Explanation<OWLAxiom>> explanations, HashSet<OWLAxiom> ontologyAxiomSet) {
+	public static void MI_measure(OWLOntology ontology, Set<Explanation<OWLAxiom>> explanations,
+			HashSet<OWLAxiom> ontologyAxiomSet) throws FileNotFoundException {
 
-//		float RiK;
-//		float Msize;
-//		float OneMinusRiK;
-//		ArrayList<Float> RiKarray = new ArrayList<>();
-		
+		long startTime = System.currentTimeMillis();
+
+		File file = new File("outputs/output_jfact_MI_New-Feature-BottomObjectProperty-001.txt");
+		FileOutputStream fos = new FileOutputStream(file);
+		PrintStream ps = new PrintStream(fos);
+		System.setOut(ps);
+
+		// float RiK;
+		// float Msize;
+		// float OneMinusRiK;
+		// ArrayList<Float> RiKarray = new ArrayList<>();
+
 		Set<OWLSubClassOfAxiom> OWLSubClassOfAxiomSet = ontology.getAxioms(AxiomType.SUBCLASS_OF);
-		
-		Set<OWLEquivalentClassesAxiom> OWLEquivalentClassesAxiomSet = ontology
-				.getAxioms(AxiomType.EQUIVALENT_CLASSES);
+
+		Set<OWLEquivalentClassesAxiom> OWLEquivalentClassesAxiomSet = ontology.getAxioms(AxiomType.EQUIVALENT_CLASSES);
 		for (OWLEquivalentClassesAxiom OWLEquivalentClasses : OWLEquivalentClassesAxiomSet) {
 			ontologyAxiomSet.add(OWLEquivalentClasses);
 		}
@@ -163,7 +174,6 @@ class MI_jfact {
 			ontologyAxiomSet.add(OWLTransitiveObjectProperty);
 		}
 
-
 		int OWLSubClassOfAxiomSetSize = OWLSubClassOfAxiomSet.size();
 		int OWLEquivalentClassesAxiomSetSize = OWLEquivalentClassesAxiomSet.size();
 		int OWLDisjointClassesAxiomSetSize = OWLDisjointClassesAxiomSet.size();
@@ -195,8 +205,8 @@ class MI_jfact {
 		System.out.println("OWLSameIndividualAxiomSetSize: " + OWLSameIndividualAxiomSetSize);
 		System.out.println("OWLClassAssertionAxiomSetSize: " + OWLClassAssertionAxiomSetSize);
 		System.out.println("OWLObjectPropertyAssertionAxiomSetSize: " + OWLObjectPropertyAssertionAxiomSetSize);
-		System.out.println("OWLNegativeObjectPropertyAssertionAxiomSetSize: "
-				+ OWLNegativeObjectPropertyAssertionAxiomSetSize);
+		System.out.println(
+				"OWLNegativeObjectPropertyAssertionAxiomSetSize: " + OWLNegativeObjectPropertyAssertionAxiomSetSize);
 		System.out.println("OWLSubObjectPropertyOfAxiomSetSize: " + OWLSubObjectPropertyOfAxiomSetSize);
 		System.out.println("OWLEquivalentObjectPropertyAxiomSetSize: " + OWLEquivalentObjectPropertyAxiomSetSize);
 		System.out.println("OWLDisjointObjectPropertiesSetSize: " + OWLDisjointObjectPropertiesSetSize);
@@ -204,8 +214,8 @@ class MI_jfact {
 		System.out.println("OWLObjectPropertyDomainAxiomSetSize: " + OWLObjectPropertyDomainAxiomSetSize);
 		System.out.println("OWLObjectPropertyRangeAxiomSetSize: " + OWLObjectPropertyRangeAxiomSetSize);
 		System.out.println("OWLFunctionalObjectPropertyAxiomSetSize: " + OWLFunctionalObjectPropertyAxiomSetSize);
-		System.out.println("OWLInverseFunctionalObjectPropertyAxiomSetSize: "
-				+ OWLInverseFunctionalObjectPropertyAxiomSetSize);
+		System.out.println(
+				"OWLInverseFunctionalObjectPropertyAxiomSetSize: " + OWLInverseFunctionalObjectPropertyAxiomSetSize);
 		System.out.println("OWLReflexiveObjectPropertyAxiomSetSize: " + OWLReflexiveObjectPropertyAxiomSetSize);
 		System.out.println("OWLIrreflexiveObjectPropertyAxiomSetSize: " + OWLIrreflexiveObjectPropertyAxiomSetSize);
 		System.out.println("OWLSymmetricObjectPropertyAxiomSetSize: " + OWLSymmetricObjectPropertyAxiomSetSize);
@@ -213,11 +223,13 @@ class MI_jfact {
 		System.out.println("OWLTransitiveObjectPropertyAxiomSetSize: " + OWLTransitiveObjectPropertyAxiomSetSize);
 
 		System.out.println("----------------------------------------------------------------");
-		
+
 		float sizeOfMI = explanations.size();
 		System.out.println("Explanation size: " + explanations.size());
-		
+
 		System.out.println("2. MI-INCONSISTENCY MEASURE I_mi: " + sizeOfMI);
+
+		TotalTimeExecution.totalTime(startTime);
 
 	}
 }
