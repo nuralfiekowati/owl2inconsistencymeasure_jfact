@@ -41,7 +41,7 @@ class MI_jfact {
 
 		long startTime = System.currentTimeMillis();
 
-		File file = new File("outputs/output_jfact_MI_New-Feature-BottomObjectProperty-001.txt");
+		File file = new File("outputs/output_jfact_MI_K3.txt");
 		FileOutputStream fos = new FileOutputStream(file);
 		PrintStream ps = new PrintStream(fos);
 		System.setOut(ps);
