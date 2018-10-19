@@ -1,10 +1,15 @@
 package owl2inconsistencymeasures;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.semanticweb.owl.explanation.api.Explanation;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -23,22 +28,44 @@ class Df_jfact {
 
 	static OWLReasonerFactory rf6 = new JFactFactory();
 	static OWLOntologyManager manager6 = OWLManager.createOWLOntologyManager();
+	static OWLReasoner reasoner6;
 	static AddAxiom addAxiom6;
 	static Set<OWLAxiom> axiomsToRemove6;
+	static ArrayList<Integer> explanationSizeList = new ArrayList<>();
 	static ArrayList<Integer> consistentSubsetSize = new ArrayList<>();
 	static HashSet<Set<OWLAxiom>> consistentSubset = new HashSet<Set<OWLAxiom>>();
 	static HashSet<Set<OWLAxiom>> inconsistentSubset = new HashSet<Set<OWLAxiom>>();
-	static ArrayList<Integer> explanationSizeList = new ArrayList<>();
-	static float Msize;
-	static float RiK;
-	static float OneMinusRiK;
 	static ArrayList<Float> RiKarray = new ArrayList<>();
 
-	public static void Idf_measure(HashSet<OWLAxiom> ontologyAxiomSet) {
+	static int iPlus1;
+	static float Msize;
+	static float Csize;
+	static float MsizePlusCsize;
+	static float RiK;
+	static float OneMinusRiK;
+	static float RiKDivi;
+	static float total = 1;
+	static float sizeOfM;
+
+	public static void Idf_measure(HashSet<OWLAxiom> ontologyAxiomSet, Set<OWLAxiom> arrayOfExplanation,
+			Set<Explanation<OWLAxiom>> explanations) {
+
+		long startTime = System.currentTimeMillis();
+		int Ksize = SizeOfK.sizeK(ontologyAxiomSet);
 
 		try {
+
+			File file = new File("outputs/output_jfact_Df_K1.txt");
+			FileOutputStream fos = new FileOutputStream(file);
+			PrintStream ps = new PrintStream(fos);
+			System.setOut(ps);
+
 			OWLOntology AxiomOntology6 = manager6.createOntology();
-			int Ksize = SizeOfK.sizeK(ontologyAxiomSet);
+
+			for (int i = 0; i < explanations.size(); i++) {
+				sizeOfM = arrayOfExplanation.size();
+				explanationSizeList.add((int) sizeOfM);
+			}
 
 			for (Set<OWLAxiom> s : PoweSetCount.powerSet(ontologyAxiomSet)) {
 				manager6 = OWLManager.createOWLOntologyManager();
@@ -55,10 +82,7 @@ class Df_jfact {
 					manager6.applyChange(addAxiom6);
 				}
 
-				OWLReasoner reasoner6 = rf6.createReasoner(AxiomOntology6); // for
-																			// hermit
-																			// and
-																			// JFact
+				reasoner6 = rf6.createReasoner(AxiomOntology6);
 
 				System.out.println("C: " + s);
 				System.out.println("Is C consistent? " + reasoner6.isConsistent());
@@ -75,24 +99,22 @@ class Df_jfact {
 
 			for (int i = 0; i < Ksize; i++) {
 
-				int iPlus1 = i + 1;
+				iPlus1 = i + 1;
 
 				Msize = Collections.frequency(explanationSizeList, iPlus1);
-
-				float Csize;
-
 				Csize = Collections.frequency(consistentSubsetSize, iPlus1);
 				System.out.println("Msize of " + iPlus1 + ": " + Msize);
 				System.out.println("Csize of " + iPlus1 + ": " + Csize);
-				float MsizePlusCsize = Msize + Csize;
+				MsizePlusCsize = Msize + Csize;
 				if (Msize == 0) {
 					RiK = 0;
 				} else {
 					RiK = Msize / MsizePlusCsize;
+					System.out.println("Lalala");
 				}
 
 				System.out.println("R" + iPlus1 + "(K): " + Msize + "/" + MsizePlusCsize + "= " + RiK);
-				float RiKDivi = RiK / (float) iPlus1;
+				RiKDivi = RiK / (float) iPlus1;
 				System.out.println("RiKDivi: " + RiKDivi);
 				OneMinusRiK = (float) 1 - RiKDivi;
 				System.out.println("(1 - RiK): " + OneMinusRiK);
@@ -100,7 +122,6 @@ class Df_jfact {
 				RiKarray.add(OneMinusRiK);
 			}
 
-			float total = 1;
 			System.out.println("Number of one minus RiK: " + RiKarray.size());
 			for (float value : RiKarray) {
 				System.out.println("Each value in one minus RiK: " + value);
@@ -114,16 +135,20 @@ class Df_jfact {
 		} catch (OWLOntologyRenameException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (TimeOutException e) {
+		} catch (TimeOutException f) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ReasonerInterruptedException e) {
+			f.printStackTrace();
+		} catch (ReasonerInterruptedException g) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (OWLOntologyCreationException e) {
+			g.printStackTrace();
+		} catch (OWLOntologyCreationException h) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			h.printStackTrace();
+		} catch (FileNotFoundException i) {
+			i.printStackTrace();
 		}
+
+		TotalTimeExecution.totalTime(startTime);
 
 	}
 }

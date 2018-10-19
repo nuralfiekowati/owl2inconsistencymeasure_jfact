@@ -1,5 +1,9 @@
 package owl2inconsistencymeasures;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,20 +12,38 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 
 class Ir_jfact {
 
+	static int Ksize;
+	static float sizeOfMI;
+	static float I_ir;
+
 	public static void Iir_measure(Set<Explanation<OWLAxiom>> explanations, HashSet<OWLAxiom> ontologyAxiomSet) {
 
-		int Ksize = SizeOfK.sizeK(ontologyAxiomSet);
-		float sizeOfMI = explanations.size();
+		long startTime = System.currentTimeMillis();
 
-		float I_ir = sizeOfMI / Ksize;
-		System.out.println("Size of MI(K): " + sizeOfMI);
-		System.out.println("Size of K: " + Ksize);
-		if ((sizeOfMI == 0) && (Ksize == 0)) {
-			System.out.println("6. INCOMPATIBILITY RATIO INCONSISTENCY MEASURE I_ir: 0");
-		} else {
-			System.out.println("6. INCOMPATIBILITY RATIO INCONSISTENCY MEASURE I_ir: " + I_ir);
+		try {
+			File file = new File("outputs/output_jfact_Ir_K2.txt");
+			FileOutputStream fos = new FileOutputStream(file);
+			PrintStream ps = new PrintStream(fos);
+			System.setOut(ps);
+
+			Ksize = SizeOfK.sizeK(ontologyAxiomSet);
+			sizeOfMI = explanations.size();
+
+			I_ir = sizeOfMI / Ksize;
+			System.out.println("Size of MI(K): " + sizeOfMI);
+			System.out.println("Size of K: " + Ksize);
+			if ((sizeOfMI == 0) && (Ksize == 0)) {
+				System.out.println("6. INCOMPATIBILITY RATIO INCONSISTENCY MEASURE I_ir: 0");
+			} else {
+				System.out.println("6. INCOMPATIBILITY RATIO INCONSISTENCY MEASURE I_ir: " + I_ir);
+			}
+			System.out.println("-----------------------------------------------------------------------------");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		System.out.println("-----------------------------------------------------------------------------");
+
+		TotalTimeExecution.totalTime(startTime);
 
 	}
 

@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.ReasonerInterruptedException;
+import org.semanticweb.owlapi.reasoner.TimeOutException;
 
 class Drastic_jfact {
 
@@ -13,17 +15,25 @@ class Drastic_jfact {
 
 		long startTime = System.currentTimeMillis();
 
-		File file = new File("outputs/output_jfact_drastic_K1.txt");
-		FileOutputStream fos = new FileOutputStream(file);
-		PrintStream ps = new PrintStream(fos);
-		System.setOut(ps);
+		try {
+			File file = new File("outputs/output_jfact_drastic_K3.txt");
+			FileOutputStream fos = new FileOutputStream(file);
+			PrintStream ps = new PrintStream(fos);
+			System.setOut(ps);
 
-		if (reasoner.isConsistent()) {
-			System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 0);
-			System.out.println("-----------------------------------------------------------------------------");
-		} else {
-			System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 1);
-			System.out.println("-----------------------------------------------------------------------------");
+			if (reasoner.isConsistent()) {
+				System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 0);
+				System.out.println("-----------------------------------------------------------------------------");
+			} else {
+				System.out.println("1. DRASTIC INCONSISTENCY MEASURE I_d: " + 1);
+				System.out.println("-----------------------------------------------------------------------------");
+			}
+		} catch (TimeOutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReasonerInterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		TotalTimeExecution.totalTime(startTime);
