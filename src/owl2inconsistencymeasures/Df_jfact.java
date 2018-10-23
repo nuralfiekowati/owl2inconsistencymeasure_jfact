@@ -67,7 +67,7 @@ class Df_jfact {
 				explanationSizeList.add((int) sizeOfM);
 			}
 
-			for (Set<OWLAxiom> s : PoweSetCount.powerSet(ontologyAxiomSet)) {
+			for (Set<OWLAxiom> s : PowerSetCount.powerSet(ontologyAxiomSet)) {
 				manager6 = OWLManager.createOWLOntologyManager();
 				AxiomOntology6 = manager6.createOntology();
 
