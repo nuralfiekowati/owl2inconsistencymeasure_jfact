@@ -47,7 +47,7 @@ public class Inconsistency_measure_jfact {
 	public static void main(String[] args) throws Exception {
 
 		try {
-			File inputOntologyFile = new File("examples/knowledgebaseK1.owl");
+			File inputOntologyFile = new File("data/WebOnt-description-logic-110.owl");
 
 			OWLReasonerFactory rf = new JFactFactory(); // for jfact
 
@@ -136,21 +136,21 @@ public class Inconsistency_measure_jfact {
 
 			System.out.println("theClass: " + MIKClassSet);
 
-			Drastic_jfact.Drastic_measure(reasoner); // limit of
-			MI_jfact.MI_measure(ontology, explanations);
-			MIc_jfact.MIc_measure(arrayOfExplanation, explanations);
-			Df_jfact.Idf_measure(ontologyAxiomSet, arrayOfExplanation, explanations);
-			Problematic_jfact.Ip_measure(MIKAxiomSet);
-			Ir_jfact.Iir_measure(explanations, ontologyAxiomSet);
-			Mc_jfact.Imc_measure(explanations, ontologyAxiomSet);
-			Nc_jfact.Inc_measure(ontologyAxiomSet);
-			Mv_jfact.Mv_measure(MIKClassSet, MIKIndividualSet, MIKObjectPropertySet, ontologyAxiomSet);
-			IDmcs_jfact.IDmcs_measure(MIKClassSet, MIKIndividualSet, MIKObjectPropertySet, ontologyAxiomSet);
-			MIVd_jfact.mivd_measure(MIKAxiomSet, ontologyAxiomSet);
-			MIVsharp_jfact.mivsharp_measure(arrayOfExplanationSet, ontologyAxiomSet);
-			MIVc_jfact.mivc_measure(arrayOfExplanationSet, ontologyAxiomSet);
-			MIVshapley_jfact.mivshapley_measure(df, ontologyAxiomSet);
-			Is_jfact.Iscoring_measure(explanations, ontologyAxiomSet);
+			Drastic.Id_measure(reasoner); // limit of
+			MI.Imi_measure(ontology, explanations);
+			MIc.Imic_measure(arrayOfExplanation, explanations);
+			Df.Idf_measure(ontologyAxiomSet, arrayOfExplanation, explanations);
+			Problematic.Ip_measure(MIKAxiomSet);
+			IR.Iir_measure(explanations, ontologyAxiomSet);
+			MC.Imc_measure(explanations, ontologyAxiomSet);
+			Nc.Inc_measure(ontologyAxiomSet);
+			Mv.Imv_measure(MIKClassSet, MIKIndividualSet, MIKObjectPropertySet, ontologyAxiomSet);
+			IDmcs.IDmcs_measure(MIKClassSet, MIKIndividualSet, MIKObjectPropertySet, ontologyAxiomSet);
+			MIVd.MIVd_measure(MIKAxiomSet, ontologyAxiomSet);
+			MIVsharp.MIVsharp_measure(arrayOfExplanationSet, ontologyAxiomSet);
+			MIVc.MIVc_measure(arrayOfExplanationSet, ontologyAxiomSet);
+			MIshapley.MIshapley_measure(df, ontologyAxiomSet);
+			Scoring.Is_measure(explanations, ontologyAxiomSet);
 
 			System.out.println("***************************************************************");
 

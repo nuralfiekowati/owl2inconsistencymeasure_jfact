@@ -162,7 +162,57 @@ class ManageOWL {
 		Set<OWLAxiom> theSet = new HashSet<OWLAxiom>(3000000, 1000000F);
 		theSet.addAll(ontologyAxiomSet);
 
-		System.out.println("======================");
+		System.out.println("----------------------------------------------------------------");
+		
+		int OWLSubClassOfAxiomSetSize = OWLSubClassOfAxiomSet.size();
+		int OWLEquivalentClassesAxiomSetSize = OWLEquivalentClassesAxiomSet.size();
+		int OWLDisjointClassesAxiomSetSize = OWLDisjointClassesAxiomSet.size();
+		int OWLDisjointUnionAxiomSetSize = OWLDisjointUnionAxiomSet.size();
+		int OWLDifferentIndividualsAxiomSetSize = OWLDifferentIndividualsAxiomSet.size();
+		int OWLSameIndividualAxiomSetSize = OWLSameIndividualAxiomSet.size();
+		int OWLClassAssertionAxiomSetSize = OWLClassAssertionAxiomSet.size();
+		int OWLObjectPropertyAssertionAxiomSetSize = OWLObjectPropertyAssertionAxiomSet.size();
+		int OWLNegativeObjectPropertyAssertionAxiomSetSize = OWLNegativeObjectPropertyAssertionAxiomSet.size();
+		int OWLSubObjectPropertyOfAxiomSetSize = OWLSubObjectPropertyOfAxiomSet.size();
+		int OWLEquivalentObjectPropertyAxiomSetSize = OWLEquivalentObjectPropertyAxiomSet.size();
+		int OWLDisjointObjectPropertiesSetSize = OWLDisjointObjectPropertiesSet.size();
+		int OWLInverseObjectPropertiesAxiomSetSize = OWLInverseObjectPropertiesAxiomSet.size();
+		int OWLObjectPropertyDomainAxiomSetSize = OWLObjectPropertyDomainAxiomSet.size();
+		int OWLObjectPropertyRangeAxiomSetSize = OWLObjectPropertyRangeAxiomSet.size();
+		int OWLFunctionalObjectPropertyAxiomSetSize = OWLFunctionalObjectPropertyAxiomSet.size();
+		int OWLInverseFunctionalObjectPropertyAxiomSetSize = OWLInverseFunctionalObjectPropertyAxiomSet.size();
+		int OWLReflexiveObjectPropertyAxiomSetSize = OWLReflexiveObjectPropertyAxiomSet.size();
+		int OWLIrreflexiveObjectPropertyAxiomSetSize = OWLIrreflexiveObjectPropertyAxiomSet.size();
+		int OWLSymmetricObjectPropertyAxiomSetSize = OWLSymmetricObjectPropertyAxiomSet.size();
+		int OWLAsymmetricObjectPropertyAxiomSetSize = OWLAsymmetricObjectPropertyAxiomSet.size();
+		int OWLTransitiveObjectPropertyAxiomSetSize = OWLTransitiveObjectPropertyAxiomSet.size();
+
+		System.out.println("OWLSubClassOfAxiomSetSize: " + OWLSubClassOfAxiomSetSize);
+		System.out.println("OWLEquivalentClassesAxiomSetSize: " + OWLEquivalentClassesAxiomSetSize);
+		System.out.println("OWLDisjointClassesAxiomSetSize: " + OWLDisjointClassesAxiomSetSize);
+		System.out.println("OWLDisjointUnionAxiomSetSize: " + OWLDisjointUnionAxiomSetSize);
+		System.out.println("OWLDifferentIndividualsAxiomSetSize: " + OWLDifferentIndividualsAxiomSetSize);
+		System.out.println("OWLSameIndividualAxiomSetSize: " + OWLSameIndividualAxiomSetSize);
+		System.out.println("OWLClassAssertionAxiomSetSize: " + OWLClassAssertionAxiomSetSize);
+		System.out.println("OWLObjectPropertyAssertionAxiomSetSize: " + OWLObjectPropertyAssertionAxiomSetSize);
+		System.out.println("OWLNegativeObjectPropertyAssertionAxiomSetSize: "
+				+ OWLNegativeObjectPropertyAssertionAxiomSetSize);
+		System.out.println("OWLSubObjectPropertyOfAxiomSetSize: " + OWLSubObjectPropertyOfAxiomSetSize);
+		System.out.println("OWLEquivalentObjectPropertyAxiomSetSize: " + OWLEquivalentObjectPropertyAxiomSetSize);
+		System.out.println("OWLDisjointObjectPropertiesSetSize: " + OWLDisjointObjectPropertiesSetSize);
+		System.out.println("OWLInverseObjectPropertiesAxiomSetSize: " + OWLInverseObjectPropertiesAxiomSetSize);
+		System.out.println("OWLObjectPropertyDomainAxiomSetSize: " + OWLObjectPropertyDomainAxiomSetSize);
+		System.out.println("OWLObjectPropertyRangeAxiomSetSize: " + OWLObjectPropertyRangeAxiomSetSize);
+		System.out.println("OWLFunctionalObjectPropertyAxiomSetSize: " + OWLFunctionalObjectPropertyAxiomSetSize);
+		System.out.println("OWLInverseFunctionalObjectPropertyAxiomSetSize: "
+				+ OWLInverseFunctionalObjectPropertyAxiomSetSize);
+		System.out.println("OWLReflexiveObjectPropertyAxiomSetSize: " + OWLReflexiveObjectPropertyAxiomSetSize);
+		System.out.println("OWLIrreflexiveObjectPropertyAxiomSetSize: " + OWLIrreflexiveObjectPropertyAxiomSetSize);
+		System.out.println("OWLSymmetricObjectPropertyAxiomSetSize: " + OWLSymmetricObjectPropertyAxiomSetSize);
+		System.out.println("OWLAsymmetricObjectPropertyAxiomSetSize: " + OWLAsymmetricObjectPropertyAxiomSetSize);
+		System.out.println("OWLTransitiveObjectPropertyAxiomSetSize: " + OWLTransitiveObjectPropertyAxiomSetSize);
+		
+		System.out.println("----------------------------------------------------------------");
 
 	}
 
